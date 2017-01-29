@@ -1,4 +1,7 @@
 # Transformice-EMU
+ChangeLogs:
+ - 29/01/2017
+  - Player's info from Sessions [removed]
 Libraries:
  - coomons-codec-1.0
  - coomons-collections4-4.0
