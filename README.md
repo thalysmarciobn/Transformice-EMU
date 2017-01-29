@@ -1,5 +1,8 @@
 # Transformice-EMU
 ChangeLogs:
+ - 29/01/2017
+  - log4j [removed]
+  
  - 28/01/2017
   - Player's info from Sessions [removed]
   
