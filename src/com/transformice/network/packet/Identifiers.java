@@ -5,18 +5,11 @@ public class Identifiers {
     public static class rooms {
         public static String players = "players";
         public static String Anchors = "Anchors";
-        public static String mapCode = "mapCode";
-        public static String mapName = "mapName";
-        public static String mapXML = "mapXML";
         public static String mapStatus = "mapStatus";
-        public static String mapPerma = "mapPerma";
         public static String isCurrentlyPlay = "isCurrentlyPlay";
         public static String gameStartTime = "gameStartTime";
         public static String gameStartTimeMillis = "gameStartTimeMillis";
         public static String roundTime = "roundTime";
-        public static String currentShamanType = "currentShamanType";
-        public static String currentSecondShamanType = "currentSecondShamanType";
-        public static String ISCMdata = "ISCMdata";
         public static String currentMap = "currentMap";
         public static String lastCodePartie = "lastCodePartie";
     }

@@ -7,6 +7,10 @@
       <root url="jar://$PROJECT_DIR$/../Transformice/lib/commons-codec-1.10.jar!/" />
       <root url="jar://$PROJECT_DIR$/../Transformice/lib/commons-lang3-3.3.2.jar!/" />
       <root url="jar://$PROJECT_DIR$/../Transformice/lib/log4j-1.2.17.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../Transformice/lib/log4j-api-2.6.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../Transformice/lib/log4j-core-2.6.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../Transformice/lib/slf4j-api-1.7.22.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../Transformice/lib/slf4j-simple-1.7.21.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

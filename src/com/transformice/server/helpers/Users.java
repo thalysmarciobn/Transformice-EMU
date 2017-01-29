@@ -8,8 +8,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.jboss.netty.buffer.ChannelBuffers;
 import org.jboss.netty.channel.Channel;
 import org.jboss.netty.util.internal.ConcurrentHashMap;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +22,6 @@ public class Users {
     public Server server;
     public Skills skills;
     public PacketManage packetManage;
-    private Logger print = LoggerFactory.getLogger(Users.class);
 
     public Users(Server server) {
         this.server = server;
@@ -126,7 +123,7 @@ public class Users {
     }
 
     public void sendShamanCode(Channel channel, ConcurrentHashMap room) {
-        this.sendPacket(channel, Identifiers.send.room.shaman_info, new ByteArray().writeInt(1).writeInt(0).writeByte((Integer) room.get(Identifiers.rooms.currentShamanType)).writeByte((Integer) room.get(Identifiers.rooms.currentSecondShamanType)).writeShort(1).writeShort(0).writeShort(1).writeShort(0).toByteArray());
+        this.sendPacket(channel, Identifiers.send.room.shaman_info, new ByteArray().writeInt(0).writeInt(0).writeByte(0).writeByte(0).writeShort(0).writeShort(0).writeShort(0).writeShort(0).toByteArray());
     }
 
     public void sendSync(Channel channel, int sync) {
