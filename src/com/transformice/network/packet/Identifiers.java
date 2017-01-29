@@ -5,12 +5,20 @@ public class Identifiers {
     public static class rooms {
         public static String players = "players";
         public static String Anchors = "Anchors";
+        public static String mapCode = "mapCode";
+        public static String mapName = "mapName";
+        public static String mapXML = "mapXML";
+        public static String mapStatus = "mapStatus";
+        public static String mapPerma = "mapPerma";
+        public static String isCurrentlyPlay = "isCurrentlyPlay";
+        public static String gameStartTime = "gameStartTime";
+        public static String gameStartTimeMillis = "gameStartTimeMillis";
         public static String roundTime = "roundTime";
         public static String currentShamanType = "currentShamanType";
         public static String currentSecondShamanType = "currentSecondShamanType";
         public static String ISCMdata = "ISCMdata";
-        public static String currentWord = "currentWord";
-        public static String CodePartieEnCours = "CodePartieEnCours";
+        public static String currentMap = "currentMap";
+        public static String lastCodePartie = "lastCodePartie";
     }
 
     public static class player {
@@ -19,9 +27,19 @@ public class Identifiers {
         public static String langueByte = "langueByte";
         public static String Username = "Username";
         public static String Guest = "Guest";
+        public static String isSync = "isSync";
         public static String Dead = "Dead";
         public static String Score = "Score";
         public static String hasCheese = "hasCheese";
+        public static String isReceivedDummy = "isReceivedDummy";
+        public static String isMovingRight = "isMovingRight";
+        public static String isMovingLeft = "isMovingLeft";
+        public static String isAfk = "isAfk";
+        public static String posX = "posX";
+        public static String posY = "posY";
+        public static String velX = "velX";
+        public static String velY = "velY";
+        public static String isJumping = "isJumping";
         public static String Look = "Look";
         public static String Color = "Color";
         public static String ShamanColor = "ShamanColor";
@@ -40,6 +58,8 @@ public class Identifiers {
         }
 
         public static class player {
+            public static final int[] shaman_exp = {8, 8};
+            public static final int[] shaman_skills = {8, 22};
             public static final int[] player_identification = {26, 2};
             public static final int[] login_souris = {26, 33};
             public static final int[] time_stamp = {28, 2};
@@ -53,6 +73,7 @@ public class Identifiers {
         }
 
         public static class room {
+            public static final int[] player_movement = {4, 4};
             public static final int[] enter_room = {5, 21};
             public static final int[] new_map = {5, 2};
             public static final int[] round_time = {5, 22};
@@ -77,6 +98,19 @@ public class Identifiers {
             public static final int[] version = {28, 1};
         }
 
+        public static final class old {
+            public static final class dummy {
+                public static final int C = 26;
+                public static final int dummy = 2;
+            }
+
+            public static final class anchors {
+                public static final int C = 5;
+                public static final int anchors = 7;
+            }
+        }
+
+
         public static final class _26 {
             public static final int C = 26;
             public static final int Create_Account = 7;
@@ -84,6 +118,26 @@ public class Identifiers {
             public static final int Captcha = 20;
             public static final int Room_List = 35;
             public static final int Request_Info = 40;
+        }
+
+        public static final class _8 {
+            public static final int C = 8;
+            public static final int Langue = 2;
+        }
+
+        public static final class _4 {
+            public static final int C = 4;
+            public static final int Object_Sync = 3;
+            public static final int mouse_movement = 4;
+            public static final int Mort = 5;
+            public static final int Player_Position = 6;
+            public static final int Shaman_Position = 8;
+            public static final int Crouch = 9;
+        }
+
+        public static final class _1 {
+            public static final int C = 1;
+            public static final int Old_Protocol = 1;
         }
     }
 

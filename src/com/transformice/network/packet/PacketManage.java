@@ -1,6 +1,12 @@
 package com.transformice.network.packet;
 
+import com.transformice.network.events.old.OldProtocol;
+import com.transformice.network.events.room.MouseMovement;
+import com.transformice.network.events.screen.Langue;
 import com.transformice.network.events.screen.Login;
+import com.transformice.server.helpers.Users;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -8,8 +14,19 @@ import java.util.Map;
 public class PacketManage {
     public Map<Integer, Packet> packets = new HashMap<>();
 
-    public PacketManage() {
+    private Logger print = LoggerFactory.getLogger(PacketManage.class);
+
+    private Users users;
+
+    public PacketManage(Users users) {
+        this.users = users;
         this.registry(new Login());
+        this.registry(new Langue());
+        this.registry(new MouseMovement());
+        this.registry(new OldProtocol());
+        if (this.users.server.debug) {
+            this.users.server.println("Packets loaded: " + this.packets.size(), "debug");
+        }
     }
 
     public ByteArray decrypt(int packetID, ByteArray packet, int[] keys) {

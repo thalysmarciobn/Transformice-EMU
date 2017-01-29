@@ -2,44 +2,55 @@ package com.transformice.server;
 
 import com.transformice.network.Bootstrap;
 import com.transformice.network.packet.PacketManage;
-import com.transformice.server.helpers.Rooms;
-import com.transformice.server.helpers.Sessions;
-import com.transformice.server.helpers.Tribulle;
-import com.transformice.server.helpers.Users;
+import com.transformice.server.helpers.*;
 import org.jboss.netty.channel.Channel;
-import org.jboss.netty.util.internal.ConcurrentHashMap;
 
 import java.net.InetSocketAddress;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Server {
     public List<Channel> channels = new ArrayList();
+    public List<Integer> ports = new ArrayList();
 
-    public Rooms rooms;
-    public Users users;
-    public Tribulle tribulle;
+    public Long startServer;
+
+    public boolean debug = true;
 
     public int[] packetKeys = {55,62,55,25,29,50,5,10,38,32,109,100,105,71,71,104,99,108,76,74};
     public int[] loginKeys = {-2147483648,-2147483648,256,16777216,13326141,256,16777216,10915256};
 
+    public Langues langues;
+    public Rooms rooms;
+    public Users users;
+    public Tribulle tribulle;
+    public Network network;
+    private Logger print = LoggerFactory.getLogger(Server.class);
+
     public void start() {
+        this.println("Strating server...","info");
+        this.startServer = System.nanoTime();
+        this.langues = new Langues();
         this.users = new Users(this);
-        this.users.sessions = new Sessions();
-        this.users.packetManage = new PacketManage();
+        this.users.packetManage = new PacketManage(this.users);
+        this.users.skills = new Skills(this.users, this.rooms);
+        this.network = new Network();
         this.tribulle = new Tribulle(this, this.users);
         this.rooms = new Rooms(this, this.users);
+        this.println("Server loaded in: " + ((System.nanoTime() - this.startServer) / 1000000) + "ms", "info");
         for (int port : new int[] {57}) {
             this.channels.add(new Bootstrap(this).boot().bind(new InetSocketAddress(port)));
+            this.ports.add(port);
         }
+        this.println("Server online on ports: " + this.ports.toString(), "info");
     }
 
-    public void addClientToRoom(ConcurrentHashMap player, String roomName) {
-        roomName = roomName.replace("<", "&lt;");
-        if (!this.rooms.channels.contains(roomName)) {
-            this.rooms.register(roomName);
-        }
-        this.rooms.addClient(player, roomName);
+    public void println(String message, String type) {
+        System.out.println("[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] [" + type + "] " + message);
     }
 
     public int getTime() {

@@ -24,7 +24,7 @@ public class Login implements Packet {
             authKey ^= key;
         }
         if (!playerName.matches("^[A-Za-z][A-Za-z0-9_]{2,11}$") || playerName.length() > 25 || (playerName.length() >= 1 && playerName.substring(1).contains("+"))) {
-            users.sessions.close((Channel) player.get(Identifiers.player.Channel));
+            ((Channel) player.get(Identifiers.player.Channel)).close();
         } else if (authKey == resultKey && player.get(Identifiers.player.Username).toString().isEmpty()) {
             playerName = playerName.equals("") ? "Souris" : playerName;
             System.out.println(authKey + " : " + resultKey);
@@ -35,14 +35,6 @@ public class Login implements Packet {
             }
             if (users.players.contains(playerName)) {
             } else {
-                if (!(Boolean) player.get(Identifiers.player.Guest)) {
-                    //sql
-                } else {
-                    users.sendPacket((Channel) player.get(Identifiers.player.Channel), Identifiers.send.player.login_souris, new ByteArray().writeByte(1).writeByte(10).toByteArray());
-                    users.sendPacket((Channel) player.get(Identifiers.player.Channel), Identifiers.send.player.login_souris, new ByteArray().writeByte(2).writeByte(5).toByteArray());
-                    users.sendPacket((Channel) player.get(Identifiers.player.Channel), Identifiers.send.player.login_souris, new ByteArray().writeByte(3).writeByte(15).toByteArray());
-                    users.sendPacket((Channel) player.get(Identifiers.player.Channel), Identifiers.send.player.login_souris, new ByteArray().writeByte(4).writeByte(200).toByteArray());
-                }
                 player.put(Identifiers.player.playerID, 0);
                 player.replace(Identifiers.player.Username, playerName);
                 player.put(Identifiers.player.Code, users.lastPlayerCode++);
@@ -50,10 +42,23 @@ public class Login implements Packet {
                 player.put(Identifiers.player.Dead, false);
                 player.put(Identifiers.player.Score, 0);
                 player.put(Identifiers.player.hasCheese, false);
+                player.put(Identifiers.player.isReceivedDummy, false);
+                player.put(Identifiers.player.isMovingRight, false);
+                player.put(Identifiers.player.isMovingLeft, false);
+                player.put(Identifiers.player.isAfk, false);
+                player.put(Identifiers.player.isSync, false);
                 player.put(Identifiers.player.Look, "1;0,0,0,0,0,0,0,0,0");
                 player.put(Identifiers.player.Color, "78583a");
                 player.put(Identifiers.player.ShamanColor, "95d9d6");
                 player.put(Identifiers.player.roomName, "");
+                users.skills.sendShamanSkills((Channel) player.get(Identifiers.player.Channel), false);
+                users.skills.sendExp((Channel) player.get(Identifiers.player.Channel), 1, 0, 2);
+                if ((Boolean) player.get(Identifiers.player.Guest)) {
+                    users.sendPacket((Channel) player.get(Identifiers.player.Channel), Identifiers.send.player.login_souris, new ByteArray().writeByte(1).writeByte(10).toByteArray());
+                    users.sendPacket((Channel) player.get(Identifiers.player.Channel), Identifiers.send.player.login_souris, new ByteArray().writeByte(2).writeByte(5).toByteArray());
+                    users.sendPacket((Channel) player.get(Identifiers.player.Channel), Identifiers.send.player.login_souris, new ByteArray().writeByte(3).writeByte(15).toByteArray());
+                    users.sendPacket((Channel) player.get(Identifiers.player.Channel), Identifiers.send.player.login_souris, new ByteArray().writeByte(4).writeByte(200).toByteArray());
+                }
                 users.sendPacket((Channel) player.get(Identifiers.player.Channel), Identifiers.send.player.player_identification, new ByteArray().writeInt((Integer) player.get(Identifiers.player.playerID)).writeUTF((String) player.get(Identifiers.player.Username)).writeInt(600000).writeByte((Integer) player.get(Identifiers.player.langueByte)).writeInt((Integer) player.get(Identifiers.player.Code)).writeByte((Integer) player.get(Identifiers.player.PrivilegeLevel)).writeByte(0).writeBoolean(false).toByteArray());
                 users.sendPacket((Channel) player.get(Identifiers.player.Channel), Identifiers.send.player.time_stamp, new ByteArray().writeInt(users.server.getTime()).toByteArray());
                 users.sendPacket((Channel) player.get(Identifiers.player.Channel), Identifiers.send.player.email_confirmed, 1);
@@ -61,7 +66,7 @@ public class Login implements Packet {
                 users.server.tribulle.sendFriendList(player, null);
                 users.server.tribulle.sendIgnoredsList(player);
                 users.server.tribulle.sendTribe(player, false);
-                users.server.addClientToRoom(player, "BR-thalys");
+                users.enterRoom(player, player.get(Identifiers.player.Langue) + "-thalys");
 
                 users.server.users.players.add(playerName);
             }

@@ -1,6 +1,7 @@
 package com.transformice.network;
 
 import com.transformice.network.packet.ByteArray;
+import com.transformice.network.packet.Identifiers;
 import com.transformice.network.packet.ParsePackets;
 import com.transformice.server.Server;
 import org.apache.commons.lang3.ArrayUtils;
@@ -8,6 +9,9 @@ import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.ChannelStateEvent;
 import org.jboss.netty.channel.MessageEvent;
 import org.jboss.netty.channel.SimpleChannelHandler;
+import org.jboss.netty.util.internal.ConcurrentHashMap;
+
+import java.util.concurrent.ThreadLocalRandom;
 
 public class ClientHandler extends SimpleChannelHandler {
     private final Server server;
@@ -20,12 +24,22 @@ public class ClientHandler extends SimpleChannelHandler {
 
     @Override
     public void channelOpen(ChannelHandlerContext context, ChannelStateEvent e) {
-        this.server.users.sessions.addSession(context.getChannel());
+        ConcurrentHashMap player = new ConcurrentHashMap();
+        player.put(Identifiers.player.Channel, context.getChannel());
+        player.put(Identifiers.player.Username, "");
+        player.put(Identifiers.player.LastPacket, ThreadLocalRandom.current().nextInt(0,99));
+        player.put(Identifiers.player.AuthKey, ThreadLocalRandom.current().nextInt(0,Integer.MAX_VALUE));
+        player.put(Identifiers.player.Langue, "BR");
+        player.put(Identifiers.player.langueByte, 3);
+        context.getChannel().setAttachment(player);
     }
 
     @Override
     public void channelClosed(ChannelHandlerContext context, ChannelStateEvent e) {
-        this.server.users.sessions.removeSession(context.getChannel());
+        ConcurrentHashMap player = (ConcurrentHashMap) context.getChannel().getAttachment();
+        this.server.rooms.removeClient(player, (String) player.get(Identifiers.player.roomName));
+        this.server.users.players.remove(player.get(Identifiers.player.Username));
+        player.clear();
     }
 
     @Override
@@ -33,8 +47,8 @@ public class ClientHandler extends SimpleChannelHandler {
         if ((e.getMessage() instanceof byte[])) {
             byte[] buff = (byte[]) e.getMessage();
             if (buff != null && buff.length > 2) {
-                if (this.server.users.sessions.checkIncompletePacket(context.getChannel())) {
-                    buff = ArrayUtils.addAll(this.server.users.sessions.getIncompletePacket(context.getChannel()), buff);
+                if (this.server.network.checkIncompletePacket(context.getChannel())) {
+                    buff = ArrayUtils.addAll(this.server.network.getIncompletePacket(context.getChannel()), buff);
                 }
                 this.parsePacket(context, new ByteArray(buff), buff);
             }
@@ -52,7 +66,7 @@ public class ClientHandler extends SimpleChannelHandler {
                         this.parse.parsePacket(context.getChannel(), packet, packetID);
                     }
                 } else if (packet.size() < length) {
-                    this.server.users.sessions.putIncompletePacket(context.getChannel(), buff);
+                    this.server.network.putIncompletePacket(context.getChannel(), buff);
                 } else if (packet.size() > length) {
                     byte[] data = packet.read(new byte[length]);
                     if (length >= 2) {
