@@ -1,0 +1,14 @@
+<component name="libraryTable">
+  <library name="lib">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../Transformice/lib/netty-3.10.5.Final.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../Transformice/lib/commons-io-2.4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../Transformice/lib/commons-collections4-4.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../Transformice/lib/commons-codec-1.10.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../Transformice/lib/commons-lang3-3.3.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../Transformice/lib/log4j-1.2.17.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
