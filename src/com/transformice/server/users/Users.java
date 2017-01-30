@@ -111,8 +111,9 @@ public class Users {
         Channel channel = (Channel) player.get(Identifiers.player.Channel);
         this.sendPacket(channel, Identifiers.send.room.new_map, new ByteArray().writeInt((Integer) room.get(Identifiers.rooms.currentMap)).writeShort(this.server.rooms.getPlayerCount(room)).writeByte((Integer) room.get(Identifiers.rooms.lastCodePartie)).writeUTF("").writeUTF("").writeByte(0).writeByte(0).toByteArray());
         this.sendPacket(channel, Identifiers.send.room.shaman_info, new ByteArray().writeInt(0).writeInt(0).writeByte(0).writeByte(0).writeShort(0).writeShort(0).writeShort(0).writeShort(0).toByteArray());
+        this.sendPlayerList(channel, room);
         int sync = this.server.rooms.getSyncCode(room);
-        this.sendOldPacket(channel, Identifiers.send.old.room.sync, (Object[]) new Object[]{sync});
+        this.sendSync(channel, sync);
         if ((Integer) player.get(Identifiers.player.Code) == sync) {
             player.replace(Identifiers.player.isSync, true);
         } else {
@@ -120,10 +121,22 @@ public class Users {
         }
         this.sendPacket(channel, Identifiers.send.room.round_time, new ByteArray().writeShort(this.server.rooms.getRoundTime(room) + ((Integer) room.get(Identifiers.rooms.gameStartTime) - this.server.getTime())).toByteArray());
         if ((Boolean) room.get(Identifiers.rooms.isCurrentlyPlay)) {
-            this.sendPacket(channel, Identifiers.send.room.map_start_timer, 1);
+            this.sendMapAccess(channel, 0);
         } else {
-            this.sendPacket(channel, Identifiers.send.room.map_start_timer, 0);
+            this.sendMapAccess(channel, 1);
         }
+    }
+
+    public void sendSync(Channel channel, int sync) {
+        this.sendOldPacket(channel, Identifiers.send.old.room.sync, new Object[]{sync});
+    }
+
+    public void sendMapAccess(Channel channel, int value) {
+        this.sendPacket(channel, Identifiers.send.room.map_start_timer, value);
+    }
+
+    public void sendPlayerList(Channel channel, ConcurrentHashMap room) {
+        this.sendOldPacket(channel, Identifiers.send.old.room.player_list, this.server.rooms.getPlayerList(room, this.server.rooms.getPlayerCount(room)));
     }
 
     public String getPlayerData(ConcurrentHashMap player) {

@@ -2,6 +2,8 @@ package com.transformice.server.config;
 
 public class Config {
 
+    public static boolean debug = true;
+
     public static String MySQLHost = "127.0.0.1";
     public static int MySQLPort = 3306;
     public static String MySQLUser = "thalys";

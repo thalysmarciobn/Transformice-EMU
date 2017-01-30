@@ -3,6 +3,7 @@ package com.transformice.server.rooms;
 import com.transformice.network.packet.ByteArray;
 import com.transformice.network.packet.Identifiers;
 import com.transformice.server.Server;
+import com.transformice.server.config.Config;
 import com.transformice.server.rooms.threads.MapChange;
 import com.transformice.server.users.Users;
 import org.apache.commons.lang3.StringUtils;
@@ -38,46 +39,45 @@ public class Rooms {
         return repeat ? this.tasks.scheduleAtFixedRate(task, start, delay, tu) : this.tasks.schedule(task, delay, tu);
     }
 
-    public void register(String roomName) {
-        ConcurrentHashMap room = new ConcurrentHashMap();
-        room.put(Identifiers.rooms.players, new ConcurrentHashMap());
-        room.put(Identifiers.rooms.mapStatus, 0);
-        room.put(Identifiers.rooms.roundTime, 120);
-        room.put(Identifiers.rooms.lastCodePartie, 0);
-        room.put(Identifiers.rooms.currentMap, 0);
-        room.put(Identifiers.rooms.isCurrentlyPlay, false);
-        room.put(Identifiers.rooms.gameStartTime, 0);
-        room.put(Identifiers.rooms.gameStartTimeMillis, 0);
-        room.put(Identifiers.rooms.Anchors, new String[]{});
-        this.channels.put(roomName, room);
-        this.scheduleTask(new MapChange(this, room, roomName), 0L, (Integer) room.get(Identifiers.rooms.roundTime), TimeUnit.SECONDS, true);
-    }
-
     public int selectMap() {
         return this.MapList[ThreadLocalRandom.current().nextInt(this.MapList.length)];
     }
 
     public void addClient(ConcurrentHashMap player, String roomName) {
-        if (this.channels.get(roomName) == null) {
-            this.register(roomName);
+        if (!this.channels.containsKey(roomName)) {
+            ConcurrentHashMap channel = new ConcurrentHashMap();
+            channel.put(Identifiers.rooms.players, new ConcurrentHashMap());
+            channel.put(Identifiers.rooms.mapStatus, 0);
+            channel.put(Identifiers.rooms.roundTime, 120);
+            channel.put(Identifiers.rooms.lastCodePartie, 0);
+            channel.put(Identifiers.rooms.currentMap, 0);
+            channel.put(Identifiers.rooms.currentSyncCode, -1);
+            channel.put(Identifiers.rooms.currentSyncName, "");
+            channel.put(Identifiers.rooms.isCurrentlyPlay, false);
+            channel.put(Identifiers.rooms.gameStartTime, 0);
+            channel.put(Identifiers.rooms.gameStartTimeMillis, 0);
+            channel.put(Identifiers.rooms.Anchors, new String[]{});
+            this.channels.put(roomName, channel);
+            if (Config.debug) {
+                this.server.println("New room: " + roomName, "debug");
+            }
+            ConcurrentHashMap room = (ConcurrentHashMap) this.channels.get(roomName);
+            ((ConcurrentHashMap) room.get(Identifiers.rooms.players)).put(player.get(Identifiers.player.Username), player);
+            player.replace(Identifiers.player.roomName, roomName);
+            this.scheduleTask(new MapChange(this, (ConcurrentHashMap) this.channels.get(roomName)), 0L, (Integer) ((ConcurrentHashMap) this.channels.get(roomName)).get(Identifiers.rooms.roundTime), TimeUnit.SECONDS, true);
+        } else {
+            ConcurrentHashMap room = (ConcurrentHashMap) this.channels.get(roomName);
+            ((ConcurrentHashMap) room.get(Identifiers.rooms.players)).put(player.get(Identifiers.player.Username), player);
+            player.replace(Identifiers.player.roomName, roomName);
+            player.replace(Identifiers.player.Dead, room.get(Identifiers.rooms.isCurrentlyPlay));
+            this.sendAllOthersOld(player, room, Identifiers.send.old.room.player_respawn, this.users.getPlayerData(player));
+            this.users.startPlayer(player, room);
         }
-        ConcurrentHashMap room = (ConcurrentHashMap) this.channels.get(roomName);
-        ((ConcurrentHashMap) room.get(Identifiers.rooms.players)).put(player.get(Identifiers.player.Username), player);
-        player.replace(Identifiers.player.roomName, roomName);
-        player.replace(Identifiers.player.Dead, room.get(Identifiers.rooms.isCurrentlyPlay));
-        this.users.startPlayer(player, room);
-        this.sendAllOthersOld(player, room, Identifiers.send.old.room.player_respawn, this.users.getPlayerData(player));
-        this.sendPlayerList(room);
     }
 
     public void removeClient(ConcurrentHashMap player, String roomName) {
         ConcurrentHashMap room = (ConcurrentHashMap) this.channels.get(roomName);
         ((ConcurrentHashMap) room.get(Identifiers.rooms.players)).remove(player.get(Identifiers.player.Username));
-        this.sendPlayerList(room);
-    }
-
-    public void sendPlayerList(ConcurrentHashMap room) {
-        this.sendAllOld(room, Identifiers.send.old.room.player_list, this.server.rooms.getPlayerList(room, this.server.rooms.getPlayerCount(room)));
     }
 
     public void sendAllOthersOld(ConcurrentHashMap sender, ConcurrentHashMap room, int[] identifiers, Object... packet) {
@@ -121,13 +121,28 @@ public class Rooms {
     }
 
     public int getSyncCode(ConcurrentHashMap room) {
-        return 1;
+        if (this.getPlayerCount(room) > 0) {
+            if ((Integer) room.get(Identifiers.rooms.currentSyncCode) == -1) {
+                ConcurrentHashMap<String, ConcurrentHashMap> players = (ConcurrentHashMap) room.get(Identifiers.rooms.players);
+                Object[] values = players.values().toArray();
+                ConcurrentHashMap player = (ConcurrentHashMap) values[ThreadLocalRandom.current().nextInt(values.length)];
+                room.replace(Identifiers.rooms.currentSyncCode, player.get(Identifiers.player.Code));
+                room.replace(Identifiers.rooms.currentSyncName, player.get(Identifiers.player.Username));
+            } else {
+                if ((Integer) room.get(Identifiers.rooms.currentSyncCode) == -1) {
+                    room.replace(Identifiers.rooms.currentSyncCode, 0);
+                    room.replace(Identifiers.rooms.currentSyncName, "");
+                }
+            }
+        }
+        return (Integer) room.get(Identifiers.rooms.currentSyncCode);
     }
 
     public Object[] getPlayerList(ConcurrentHashMap room, int playerCount) {
         List<String> result = new ArrayList(playerCount);
         ConcurrentHashMap<String, ConcurrentHashMap> players = (ConcurrentHashMap) room.get(Identifiers.rooms.players);
         for (ConcurrentHashMap player : players.values()) {
+            System.out.println(StringUtils.join(new Object[]{player.get(Identifiers.player.Username), player.get(Identifiers.player.Code), 1, (Boolean) player.get(Identifiers.player.Dead) ? 1 : 0, player.get(Identifiers.player.Score), (Boolean) player.get(Identifiers.player.hasCheese) ? 1 : 0, "0,1", 0, player.get(Identifiers.player.Look), 0, player.get(Identifiers.player.Color), player.get(Identifiers.player.ShamanColor), 0},"#"));
             result.add(StringUtils.join(new Object[]{player.get(Identifiers.player.Username), player.get(Identifiers.player.Code), 1, (Boolean) player.get(Identifiers.player.Dead) ? 1 : 0, player.get(Identifiers.player.Score), (Boolean) player.get(Identifiers.player.hasCheese) ? 1 : 0, "0,1", 0, player.get(Identifiers.player.Look), 0, player.get(Identifiers.player.Color), player.get(Identifiers.player.ShamanColor), 0},"#"));
         }
         return result.toArray();

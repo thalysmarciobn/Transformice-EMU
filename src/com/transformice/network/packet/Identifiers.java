@@ -6,6 +6,8 @@ public class Identifiers {
         public static String players = "players";
         public static String Anchors = "Anchors";
         public static String mapStatus = "mapStatus";
+        public static String currentSyncCode = "currentSyncCode";
+        public static String currentSyncName = "currentSyncName";
         public static String isCurrentlyPlay = "isCurrentlyPlay";
         public static String gameStartTime = "gameStartTime";
         public static String gameStartTimeMillis = "gameStartTimeMillis";
