@@ -127,6 +127,10 @@ public class Users {
         }
     }
 
+    public void sendPlayerDisconnect(ConcurrentHashMap room, int playerCode) {
+        this.server.rooms.sendAllOld(room, Identifiers.send.old.room.player_disconnect, playerCode);
+    }
+
     public void sendSync(Channel channel, int sync) {
         this.sendOldPacket(channel, Identifiers.send.old.room.sync, new Object[]{sync});
     }

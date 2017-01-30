@@ -84,9 +84,10 @@ public class Identifiers {
 
         public static class old {
             public static class room {
+                public static final int[] player_disconnect = {8, 7};
                 public static final int[] player_respawn = {8, 8};
-                public static final int[] sync = {8, 21};
                 public static final int[] player_list = {8, 9};
+                public static final int[] sync = {8, 21};
                 public static final int[] anchors = {5, 7};
             }
         }

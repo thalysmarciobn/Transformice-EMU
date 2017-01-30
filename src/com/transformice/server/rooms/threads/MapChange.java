@@ -20,17 +20,20 @@ public class MapChange implements Runnable {
     @Override
     public void run() {
         this.rooms.getSyncCode(this.room);
-        room.replace(Identifiers.rooms.Anchors, new String[]{});
-        room.replace(Identifiers.rooms.currentMap, this.rooms.selectMap());
-        room.replace(Identifiers.rooms.lastCodePartie, (Integer) this.room.get(Identifiers.rooms.lastCodePartie) + 1 % Integer.MAX_VALUE);
-        room.replace(Identifiers.rooms.mapStatus, (Integer) this.room.get(Identifiers.rooms.mapStatus) + 1 % 13);
-        room.replace(Identifiers.rooms.isCurrentlyPlay, false);
-        room.replace(Identifiers.rooms.gameStartTime, this.rooms.server.getTime());
-        room.replace(Identifiers.rooms.gameStartTimeMillis, System.currentTimeMillis());
+        this.room.replace(Identifiers.rooms.Anchors, new String[]{});
+        this.room.replace(Identifiers.rooms.currentMap, this.rooms.selectMap());
+        this.room.replace(Identifiers.rooms.lastCodePartie, (Integer) this.room.get(Identifiers.rooms.lastCodePartie) + 1 % Integer.MAX_VALUE);
+        this.room.replace(Identifiers.rooms.mapStatus, (Integer) this.room.get(Identifiers.rooms.mapStatus) + 1 % 13);
+        this.room.replace(Identifiers.rooms.isCurrentlyPlay, false);
+        this.room.replace(Identifiers.rooms.gameStartTime, this.rooms.server.getTime());
+        this.room.replace(Identifiers.rooms.gameStartTimeMillis, System.currentTimeMillis());
+        this.room.replace(Identifiers.rooms.isCurrentlyPlay, false);
 
         ConcurrentHashMap<String, ConcurrentHashMap> players = (ConcurrentHashMap) room.get(Identifiers.rooms.players);
         for (ConcurrentHashMap player : players.values()) {
+            player.replace(Identifiers.player.Dead, this.room.get(Identifiers.rooms.isCurrentlyPlay));
             this.rooms.users.startPlayer(player, this.room);
+            this.rooms.sendAllOthersOld(player, room, Identifiers.send.old.room.player_respawn, this.rooms.users.getPlayerData(player), 1);
         }
         this.rooms.scheduleTask(()-> this.closeRoom(), 3L, TimeUnit.SECONDS);
     }
