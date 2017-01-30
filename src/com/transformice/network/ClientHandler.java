@@ -11,6 +11,7 @@ import org.jboss.netty.channel.MessageEvent;
 import org.jboss.netty.channel.SimpleChannelHandler;
 import org.jboss.netty.util.internal.ConcurrentHashMap;
 
+import java.net.InetSocketAddress;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class ClientHandler extends SimpleChannelHandler {
@@ -26,9 +27,10 @@ public class ClientHandler extends SimpleChannelHandler {
     public void channelOpen(ChannelHandlerContext context, ChannelStateEvent e) {
         ConcurrentHashMap player = new ConcurrentHashMap();
         player.put(Identifiers.player.Channel, context.getChannel());
+        player.put(Identifiers.player.ipAddress, ((InetSocketAddress) context.getChannel().getRemoteAddress()).getAddress().getHostAddress());
         player.put(Identifiers.player.Username, "");
         player.put(Identifiers.player.LastPacket, ThreadLocalRandom.current().nextInt(0,99));
-        player.put(Identifiers.player.AuthKey, ThreadLocalRandom.current().nextInt(0,Integer.MAX_VALUE));
+        player.put(Identifiers.player.AuthKey, ThreadLocalRandom.current().nextInt(0, Integer.MAX_VALUE));
         player.put(Identifiers.player.Langue, "BR");
         player.put(Identifiers.player.langueByte, 3);
         context.getChannel().setAttachment(player);

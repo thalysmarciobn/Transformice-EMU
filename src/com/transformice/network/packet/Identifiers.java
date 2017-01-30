@@ -16,6 +16,7 @@ public class Identifiers {
 
     public static class player {
         public static String Channel = "channel";
+        public static String ipAddress = "ipAddress";
         public static String playerID = "playerID";
         public static String langueByte = "langueByte";
         public static String Username = "Username";
@@ -53,10 +54,12 @@ public class Identifiers {
         public static class player {
             public static final int[] shaman_exp = {8, 8};
             public static final int[] shaman_skills = {8, 22};
+            public static final int[] shaman_items = {20, 27};
             public static final int[] player_identification = {26, 2};
             public static final int[] login_souris = {26, 33};
             public static final int[] time_stamp = {28, 2};
             public static final int[] email_confirmed = {28, 13};
+            public static final int[] inventory = {31, 1};
         }
 
         public static class screen {

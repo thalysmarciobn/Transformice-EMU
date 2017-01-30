@@ -1,6 +1,6 @@
 package com.transformice.network.packet;
 
-import com.transformice.server.helpers.Users;
+import com.transformice.server.users.Users;
 import org.jboss.netty.channel.Channel;
 import org.jboss.netty.util.internal.ConcurrentHashMap;
 
@@ -25,6 +25,5 @@ public class ParsePackets {
         } else if (!((String) player.get(Identifiers.player.Username)).isEmpty()) {
             this.users.parsePackets(player, token, packet, packetID);
         }
-        System.out.println("Tokens: " + token[0] + ", " + token[1]);
     }
 }

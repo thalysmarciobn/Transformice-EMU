@@ -1,6 +1,6 @@
 package com.transformice.network.packet;
 
-import com.transformice.server.helpers.Users;
+import com.transformice.server.users.Users;
 import org.jboss.netty.util.internal.ConcurrentHashMap;
 
 public interface Packet {

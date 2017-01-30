@@ -4,7 +4,7 @@ import com.transformice.network.packet.ByteArray;
 import com.transformice.network.packet.Identifiers;
 import com.transformice.network.packet.Packet;
 import com.transformice.network.packet.PacketEvent;
-import com.transformice.server.helpers.Users;
+import com.transformice.server.users.Users;
 import org.jboss.netty.channel.Channel;
 import org.jboss.netty.util.internal.ConcurrentHashMap;
 
@@ -60,12 +60,14 @@ public class Login implements Packet {
                     users.sendPacket((Channel) player.get(Identifiers.player.Channel), Identifiers.send.player.login_souris, new ByteArray().writeByte(4).writeByte(200).toByteArray());
                 }
                 users.sendPacket((Channel) player.get(Identifiers.player.Channel), Identifiers.send.player.player_identification, new ByteArray().writeInt((Integer) player.get(Identifiers.player.playerID)).writeUTF((String) player.get(Identifiers.player.Username)).writeInt(600000).writeByte((Integer) player.get(Identifiers.player.langueByte)).writeInt((Integer) player.get(Identifiers.player.Code)).writeByte((Integer) player.get(Identifiers.player.PrivilegeLevel)).writeByte(0).writeBoolean(false).toByteArray());
+                users.sendShamanItems((Channel) player.get(Identifiers.player.Channel), player);
                 users.sendPacket((Channel) player.get(Identifiers.player.Channel), Identifiers.send.player.time_stamp, new ByteArray().writeInt(users.server.getTime()).toByteArray());
                 users.sendPacket((Channel) player.get(Identifiers.player.Channel), Identifiers.send.player.email_confirmed, 1);
                 users.server.tribulle.sendPlayerInfo(player);
                 users.server.tribulle.sendFriendList(player, null);
                 users.server.tribulle.sendIgnoredsList(player);
                 users.server.tribulle.sendTribe(player, false);
+                users.sendInventoryConsumables((Channel) player.get(Identifiers.player.Channel), player);
                 users.enterRoom(player, player.get(Identifiers.player.Langue) + "-thalys");
 
                 users.server.users.players.add(playerName);

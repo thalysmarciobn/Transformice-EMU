@@ -4,17 +4,13 @@ import com.transformice.network.events.old.OldProtocol;
 import com.transformice.network.events.room.MouseMovement;
 import com.transformice.network.events.screen.Langue;
 import com.transformice.network.events.screen.Login;
-import com.transformice.server.helpers.Users;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.transformice.server.users.Users;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class PacketManage {
     public Map<Integer, Packet> packets = new HashMap<>();
-
-    private Logger print = LoggerFactory.getLogger(PacketManage.class);
 
     private Users users;
 

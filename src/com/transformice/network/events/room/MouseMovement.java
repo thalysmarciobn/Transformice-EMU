@@ -4,7 +4,7 @@ import com.transformice.network.packet.ByteArray;
 import com.transformice.network.packet.Identifiers;
 import com.transformice.network.packet.Packet;
 import com.transformice.network.packet.PacketEvent;
-import com.transformice.server.helpers.Users;
+import com.transformice.server.users.Users;
 import org.jboss.netty.util.internal.ConcurrentHashMap;
 
 @PacketEvent(C = Identifiers.recv._4.C, CC = Identifiers.recv._4.mouse_movement)
@@ -26,7 +26,7 @@ public class MouseMovement implements Packet {
         int angle = isAngle ? packet.readUnsignedShort() : -1;
         int vel_angle = isAngle ? packet.readUnsignedShort() : -1;
         boolean loc1 = isAngle ? packet.readBoolean() : false;
-        ConcurrentHashMap room = users.server.rooms.channels.get(player.get(Identifiers.player.roomName));
+        ConcurrentHashMap room = (ConcurrentHashMap) users.server.rooms.channels.get(player.get(Identifiers.player.roomName));
         if (codePartie == (Integer) room.get(Identifiers.rooms.lastCodePartie)) {
             if (droiteEnCours || gaucheEnCours) {
                 player.replace(Identifiers.player.isMovingRight, droiteEnCours);

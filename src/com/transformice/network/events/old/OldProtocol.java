@@ -4,7 +4,7 @@ import com.transformice.network.packet.ByteArray;
 import com.transformice.network.packet.Identifiers;
 import com.transformice.network.packet.Packet;
 import com.transformice.network.packet.PacketEvent;
-import com.transformice.server.helpers.Users;
+import com.transformice.server.users.Users;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jboss.netty.util.internal.ConcurrentHashMap;
 
@@ -20,7 +20,7 @@ public class OldProtocol implements Packet {
         int C = (int) (values[0].charAt(0));
         int CC = (int) (values[0].charAt(1));
         values = Arrays.copyOfRange(values, 1, values.length);
-        ConcurrentHashMap room = users.server.rooms.channels.get(player.get(Identifiers.player.roomName));
+        ConcurrentHashMap room = (ConcurrentHashMap) users.server.rooms.channels.get(player.get(Identifiers.player.roomName));
         if (C == Identifiers.recv.old.dummy.C) {
             if (CC == Identifiers.recv.old.dummy.dummy) {
                 player.replace(Identifiers.player.isReceivedDummy, true);
@@ -31,6 +31,5 @@ public class OldProtocol implements Packet {
                 room.replace(Identifiers.rooms.Anchors, ArrayUtils.addAll((String[]) room.get(Identifiers.rooms.Anchors), values));
             }
         }
-        System.out.println("OldProtocol: " + C + ", " + CC);
     }
 }

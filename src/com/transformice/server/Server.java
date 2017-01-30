@@ -3,6 +3,10 @@ package com.transformice.server;
 import com.transformice.network.Bootstrap;
 import com.transformice.network.packet.PacketManage;
 import com.transformice.server.helpers.*;
+import com.transformice.server.rooms.Rooms;
+import com.transformice.server.tribulle.Tribulle;
+import com.transformice.server.users.Skills;
+import com.transformice.server.users.Users;
 import org.jboss.netty.channel.Channel;
 
 import java.net.InetSocketAddress;
