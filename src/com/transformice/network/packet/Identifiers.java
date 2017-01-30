@@ -70,6 +70,7 @@ public class Identifiers {
 
         public static class room {
             public static final int[] player_movement = {4, 4};
+            public static final int[] player_position = {4, 6};
             public static final int[] enter_room = {5, 21};
             public static final int[] new_map = {5, 2};
             public static final int[] round_time = {5, 22};
@@ -126,7 +127,7 @@ public class Identifiers {
             public static final int Object_Sync = 3;
             public static final int mouse_movement = 4;
             public static final int Mort = 5;
-            public static final int Player_Position = 6;
+            public static final int player_position = 6;
             public static final int Shaman_Position = 8;
             public static final int Crouch = 9;
         }

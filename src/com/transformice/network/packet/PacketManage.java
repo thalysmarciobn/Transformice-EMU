@@ -2,6 +2,7 @@ package com.transformice.network.packet;
 
 import com.transformice.network.events.old.OldProtocol;
 import com.transformice.network.events.room.MouseMovement;
+import com.transformice.network.events.room.PlayerPosition;
 import com.transformice.network.events.screen.Langue;
 import com.transformice.network.events.screen.Login;
 import com.transformice.server.users.Users;
@@ -19,6 +20,7 @@ public class PacketManage {
         this.registry(new Login());
         this.registry(new Langue());
         this.registry(new MouseMovement());
+        this.registry(new PlayerPosition());
         this.registry(new OldProtocol());
         if (this.users.server.debug) {
             this.users.server.println("Packets loaded: " + this.packets.size(), "debug");

@@ -103,44 +103,27 @@ public class Users {
         this.sendPacket(channel, Identifiers.send.room.enter_room, new ByteArray().writeBoolean(roomName.startsWith("*") || roomName.startsWith(String.valueOf((char) 3))).writeUTF(roomName).toByteArray());
     }
 
-    public void startPlay(ConcurrentHashMap player, ConcurrentHashMap room) {
+    public void resetPlayer(ConcurrentHashMap player, ConcurrentHashMap room) {
+
+    }
+
+    public void startPlayer(ConcurrentHashMap player, ConcurrentHashMap room) {
         Channel channel = (Channel) player.get(Identifiers.player.Channel);
-        this.sendNewMap(channel, room);
-        this.sendPlayerList(channel, room);
-        this.sendShamanCode(channel, room);
+        this.sendPacket(channel, Identifiers.send.room.new_map, new ByteArray().writeInt((Integer) room.get(Identifiers.rooms.currentMap)).writeShort(this.server.rooms.getPlayerCount(room)).writeByte((Integer) room.get(Identifiers.rooms.lastCodePartie)).writeUTF("").writeUTF("").writeByte(0).writeByte(0).toByteArray());
+        this.sendPacket(channel, Identifiers.send.room.shaman_info, new ByteArray().writeInt(0).writeInt(0).writeByte(0).writeByte(0).writeShort(0).writeShort(0).writeShort(0).writeShort(0).toByteArray());
         int sync = this.server.rooms.getSyncCode(room);
-        this.sendSync(channel, sync);
+        this.sendOldPacket(channel, Identifiers.send.old.room.sync, (Object[]) new Object[]{sync});
         if ((Integer) player.get(Identifiers.player.Code) == sync) {
             player.replace(Identifiers.player.isSync, true);
         } else {
             player.replace(Identifiers.player.isSync, false);
         }
-        this.sendRoundTime(channel, room);
+        this.sendPacket(channel, Identifiers.send.room.round_time, new ByteArray().writeShort(this.server.rooms.getRoundTime(room) + ((Integer) room.get(Identifiers.rooms.gameStartTime) - this.server.getTime())).toByteArray());
         if ((Boolean) room.get(Identifiers.rooms.isCurrentlyPlay)) {
             this.sendPacket(channel, Identifiers.send.room.map_start_timer, 1);
         } else {
             this.sendPacket(channel, Identifiers.send.room.map_start_timer, 0);
         }
-    }
-
-    public void sendNewMap(Channel channel, ConcurrentHashMap room) {
-        this.sendPacket(channel, Identifiers.send.room.new_map, new ByteArray().writeInt((Integer) room.get(Identifiers.rooms.currentMap)).writeShort(this.server.rooms.getPlayerCount(room)).writeByte((Integer) room.get(Identifiers.rooms.lastCodePartie)).writeUTF("").writeUTF("").writeByte(0).writeByte(0).toByteArray());
-    }
-
-    public void sendPlayerList(Channel channel, ConcurrentHashMap room) {
-        this.sendOldPacket(channel, Identifiers.send.old.room.player_list, this.server.rooms.getPlayerList(room, this.server.rooms.getPlayerCount(room)));
-    }
-
-    public void sendShamanCode(Channel channel, ConcurrentHashMap room) {
-        this.sendPacket(channel, Identifiers.send.room.shaman_info, new ByteArray().writeInt(0).writeInt(0).writeByte(0).writeByte(0).writeShort(0).writeShort(0).writeShort(0).writeShort(0).toByteArray());
-    }
-
-    public void sendSync(Channel channel, int sync) {
-        this.sendOldPacket(channel, Identifiers.send.old.room.sync, (Object[]) new Object[]{sync});
-    }
-
-    public void sendRoundTime(Channel channel, ConcurrentHashMap room) {
-        this.sendPacket(channel, Identifiers.send.room.round_time, new ByteArray().writeShort(this.server.rooms.getRoundTime(room) + ((Integer) room.get(Identifiers.rooms.gameStartTime) - this.server.getTime())).toByteArray());
     }
 
     public String getPlayerData(ConcurrentHashMap player) {

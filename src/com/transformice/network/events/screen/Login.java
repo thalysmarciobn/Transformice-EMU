@@ -38,7 +38,7 @@ public class Login implements Packet {
                 player.put(Identifiers.player.playerID, 0);
                 player.replace(Identifiers.player.Username, playerName);
                 player.put(Identifiers.player.Code, users.lastPlayerCode++);
-                player.put(Identifiers.player.PrivilegeLevel, 1);
+                player.put(Identifiers.player.PrivilegeLevel, 0);
                 player.put(Identifiers.player.Dead, false);
                 player.put(Identifiers.player.Score, 0);
                 player.put(Identifiers.player.hasCheese, false);

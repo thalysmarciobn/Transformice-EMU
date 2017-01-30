@@ -26,8 +26,10 @@ public class MapChange implements Runnable {
         room.replace(Identifiers.rooms.gameStartTimeMillis, System.currentTimeMillis());
 
         ConcurrentHashMap<String, ConcurrentHashMap> players = (ConcurrentHashMap) room.get(Identifiers.rooms.players);
+        room.replace(Identifiers.rooms.isCurrentlyPlay, false);
         for (ConcurrentHashMap player : players.values()) {
-            this.rooms.users.startPlay(player, (ConcurrentHashMap) this.rooms.channels.get(roomName));
+            this.rooms.users.resetPlayer(player, (ConcurrentHashMap) this.rooms.channels.get(roomName));
+            this.rooms.users.startPlayer(player, (ConcurrentHashMap) this.rooms.channels.get(roomName));
         }
     }
 }

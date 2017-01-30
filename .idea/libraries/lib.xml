@@ -11,6 +11,8 @@
       <root url="jar://$PROJECT_DIR$/../Transformice/lib/log4j-core-2.6.2.jar!/" />
       <root url="jar://$PROJECT_DIR$/../Transformice/lib/slf4j-api-1.7.22.jar!/" />
       <root url="jar://$PROJECT_DIR$/../Transformice/lib/slf4j-simple-1.7.21.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../Transformice/lib/mysql-connector-java-5.1.23-bin.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../Transformice/lib/HikariCP-2.4.6.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

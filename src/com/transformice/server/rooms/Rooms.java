@@ -1,5 +1,6 @@
 package com.transformice.server.rooms;
 
+import com.transformice.network.packet.ByteArray;
 import com.transformice.network.packet.Identifiers;
 import com.transformice.server.Server;
 import com.transformice.server.rooms.threads.MapChange;
@@ -44,7 +45,7 @@ public class Rooms {
         room.put(Identifiers.rooms.roundTime, 120);
         room.put(Identifiers.rooms.lastCodePartie, 0);
         room.put(Identifiers.rooms.currentMap, 0);
-        room.put(Identifiers.rooms.isCurrentlyPlay, true);
+        room.put(Identifiers.rooms.isCurrentlyPlay, false);
         room.put(Identifiers.rooms.gameStartTime, 0);
         room.put(Identifiers.rooms.gameStartTimeMillis, 0);
         room.put(Identifiers.rooms.Anchors, new String[]{});
@@ -61,18 +62,22 @@ public class Rooms {
             this.register(roomName);
         }
         ConcurrentHashMap room = (ConcurrentHashMap) this.channels.get(roomName);
-        ConcurrentHashMap players = (ConcurrentHashMap) room.get(Identifiers.rooms.players);
+        ((ConcurrentHashMap) room.get(Identifiers.rooms.players)).put(player.get(Identifiers.player.Username), player);
         player.replace(Identifiers.player.roomName, roomName);
-        players.put(player.get(Identifiers.player.Username), player);
         player.replace(Identifiers.player.Dead, room.get(Identifiers.rooms.isCurrentlyPlay));
+        this.users.startPlayer(player, room);
+        this.sendAllOthersOld(player, room, Identifiers.send.old.room.player_respawn, this.users.getPlayerData(player));
+        this.sendPlayerList(room);
     }
 
     public void removeClient(ConcurrentHashMap player, String roomName) {
         ConcurrentHashMap room = (ConcurrentHashMap) this.channels.get(roomName);
-        ConcurrentHashMap players = (ConcurrentHashMap) room.get(Identifiers.rooms.players);
-        if (players.contains(player.get(Identifiers.player.Username))) {
-            player.remove(player.get(Identifiers.player.Username));
-        }
+        ((ConcurrentHashMap) room.get(Identifiers.rooms.players)).remove(player.get(Identifiers.player.Username));
+        this.sendPlayerList(room);
+    }
+
+    public void sendPlayerList(ConcurrentHashMap room) {
+        this.sendAllOld(room, Identifiers.send.old.room.player_list, this.server.rooms.getPlayerList(room, this.server.rooms.getPlayerCount(room)));
     }
 
     public void sendAllOthersOld(ConcurrentHashMap sender, ConcurrentHashMap room, int[] identifiers, Object... packet) {

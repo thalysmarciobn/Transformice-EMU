@@ -2,6 +2,8 @@ package com.transformice.server;
 
 import com.transformice.network.Bootstrap;
 import com.transformice.network.packet.PacketManage;
+import com.transformice.server.config.Config;
+import com.transformice.server.database.DatabasePool;
 import com.transformice.server.helpers.*;
 import com.transformice.server.rooms.Rooms;
 import com.transformice.server.tribulle.Tribulle;
@@ -14,8 +16,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class Server {
     public List<Channel> channels = new ArrayList();
@@ -29,15 +29,17 @@ public class Server {
     public int[] loginKeys = {-2147483648,-2147483648,256,16777216,13326141,256,16777216,10915256};
 
     public Langues langues;
+    public DatabasePool database;
     public Rooms rooms;
     public Users users;
     public Tribulle tribulle;
     public Network network;
-    private Logger print = LoggerFactory.getLogger(Server.class);
 
     public void start() {
-        this.println("Strating server...","info");
+        this.println("Connecting to database...","info");
+        this.database = new DatabasePool();
         this.startServer = System.nanoTime();
+        this.println("Strating server...","info");
         this.langues = new Langues();
         this.users = new Users(this);
         this.users.packetManage = new PacketManage(this.users);
