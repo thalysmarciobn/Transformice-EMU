@@ -78,6 +78,9 @@ public class Rooms {
     public void removeClient(ConcurrentHashMap player, String roomName) {
         ConcurrentHashMap room = (ConcurrentHashMap) this.channels.get(roomName);
         ((ConcurrentHashMap) room.get(Identifiers.rooms.players)).remove(player.get(Identifiers.player.Username));
+        if (this.getPlayerCount(room) == 0) {
+            this.channels.remove(roomName);
+        }
         this.server.users.sendPlayerDisconnect(room, (Integer) player.get(Identifiers.player.Code));
     }
 

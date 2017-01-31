@@ -4,6 +4,7 @@ import com.transformice.network.packet.ByteArray;
 import com.transformice.network.packet.Identifiers;
 import com.transformice.network.packet.Packet;
 import com.transformice.network.packet.PacketEvent;
+import com.transformice.server.config.Config;
 import com.transformice.server.users.Users;
 import org.jboss.netty.channel.Channel;
 import org.jboss.netty.util.internal.ConcurrentHashMap;
@@ -13,14 +14,14 @@ public class Login implements Packet {
 
     @Override
     public void parse(Users users, ConcurrentHashMap player, ByteArray packet, int packetID) {
-        packet = users.packetManage.decrypt(packetID, packet, users.server.packetKeys);
+        packet = users.packetManage.decrypt(packetID, packet, Config.packetKeys);
         String playerName = users.parsePlayerName(packet.readUTF());
         String password = packet.readUTF();
         player.put(Identifiers.player.Link, packet.readUTF());
         String startRoom = packet.readUTF();
         int resultKey = packet.readInt();
         int authKey = (Integer) player.get(Identifiers.player.AuthKey);
-        for (int key : users.server.loginKeys) {
+        for (int key : Config.loginKeys) {
             authKey ^= key;
         }
         if (!playerName.matches("^[A-Za-z][A-Za-z0-9_]{2,11}$") || playerName.length() > 25 || (playerName.length() >= 1 && playerName.substring(1).contains("+"))) {

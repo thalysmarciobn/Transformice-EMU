@@ -13,5 +13,6 @@ public class PlayerPosition implements Packet {
     @Override
     public void parse(Users users, ConcurrentHashMap player, ByteArray packet, int packetID) {
         users.server.rooms.sendAll((ConcurrentHashMap) users.server.rooms.channels.get(player.get(Identifiers.player.roomName)), Identifiers.send.room.player_position, new ByteArray().writeInt((Integer) player.get(Identifiers.player.Code)).writeBoolean(packet.readBoolean()).toByteArray());
+        System.out.println("asas");
     }
 }

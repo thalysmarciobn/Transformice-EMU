@@ -2,8 +2,7 @@ package com.transformice.server;
 
 import com.transformice.network.Bootstrap;
 import com.transformice.network.packet.PacketManage;
-import com.transformice.server.config.Config;
-import com.transformice.server.database.DatabasePool;
+import com.transformice.server.database.Database;
 import com.transformice.server.helpers.*;
 import com.transformice.server.rooms.Rooms;
 import com.transformice.server.tribulle.Tribulle;
@@ -16,6 +15,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 public class Server {
     public List<Channel> channels = new ArrayList();
@@ -23,36 +26,48 @@ public class Server {
 
     public Long startServer;
 
-    public boolean debug = true;
-
-    public int[] packetKeys = {55,62,55,25,29,50,5,10,38,32,109,100,105,71,71,104,99,108,76,74};
-    public int[] loginKeys = {-2147483648,-2147483648,256,16777216,13326141,256,16777216,10915256};
-
     public Langues langues;
-    public DatabasePool database;
+    public Database database;
     public Rooms rooms;
     public Users users;
     public Tribulle tribulle;
     public Network network;
 
+    private ScheduledExecutorService tasks = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors());
+
     public void start() {
         this.println("Connecting to database...","info");
-        this.database = new DatabasePool();
-        this.startServer = System.nanoTime();
-        this.println("Strating server...","info");
-        this.langues = new Langues();
-        this.users = new Users(this);
-        this.users.packetManage = new PacketManage(this.users);
-        this.users.skills = new Skills(this.users, this.rooms);
-        this.network = new Network();
-        this.tribulle = new Tribulle(this, this.users);
-        this.rooms = new Rooms(this, this.users);
-        this.println("Server loaded in: " + ((System.nanoTime() - this.startServer) / 1000000) + "ms", "info");
-        for (int port : new int[] {57}) {
-            this.channels.add(new Bootstrap(this).boot().bind(new InetSocketAddress(port)));
-            this.ports.add(port);
+        this.database = new Database();
+        if (this.database.connect()) {
+            this.scheduleTask(()-> this.database.freeIdleConnections(), 0, 30L, TimeUnit.SECONDS, true);
+            this.startServer = System.nanoTime();
+            this.println("Strating server...", "info");
+            this.langues = new Langues();
+            this.users = new Users(this);
+            this.users.packetManage = new PacketManage(this.users);
+            this.users.skills = new Skills(this.users, this.rooms);
+            this.network = new Network();
+            this.tribulle = new Tribulle(this, this.users);
+            this.rooms = new Rooms(this, this.users);
+            this.println("Server loaded in: " + ((System.nanoTime() - this.startServer) / 1000000) + "ms", "info");
+            for (int port : new int[]{57}) {
+                this.channels.add(new Bootstrap(this).boot().bind(new InetSocketAddress(port)));
+                this.ports.add(port);
+            }
+            this.println("Server online on ports: " + this.ports.toString(), "info");
         }
-        this.println("Server online on ports: " + this.ports.toString(), "info");
+    }
+
+    public ScheduledFuture<?> scheduleTask(Runnable task, long delay, TimeUnit tu) {
+        return this.scheduleTask(task, delay, tu, false);
+    }
+
+    public ScheduledFuture<?> scheduleTask(Runnable task, long delay, TimeUnit tu, boolean repeat) {
+        return repeat ? this.tasks.scheduleAtFixedRate(task, delay, delay, tu) : this.tasks.schedule(task, delay, tu);
+    }
+
+    public ScheduledFuture<?> scheduleTask(Runnable task, long start, long delay, TimeUnit tu, boolean repeat) {
+        return repeat ? this.tasks.scheduleAtFixedRate(task, start, delay, tu) : this.tasks.schedule(task, delay, tu);
     }
 
     public void println(String message, String type) {

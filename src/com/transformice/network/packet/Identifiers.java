@@ -20,6 +20,7 @@ public class Identifiers {
         public static String Channel = "channel";
         public static String ipAddress = "ipAddress";
         public static String playerID = "playerID";
+        public static String lastPacketID = "lastPacketID";
         public static String langueByte = "langueByte";
         public static String Username = "Username";
         public static String Guest = "Guest";

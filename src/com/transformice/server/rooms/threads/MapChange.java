@@ -33,7 +33,7 @@ public class MapChange implements Runnable {
         for (ConcurrentHashMap player : players.values()) {
             player.replace(Identifiers.player.Dead, this.room.get(Identifiers.rooms.isCurrentlyPlay));
             this.rooms.users.startPlayer(player, this.room);
-            this.rooms.sendAllOthersOld(player, room, Identifiers.send.old.room.player_respawn, this.rooms.users.getPlayerData(player), 1);
+            this.rooms.sendAllOthersOld(player, room, Identifiers.send.old.room.player_respawn, this.rooms.users.getPlayerData(player), 0);
         }
         this.rooms.scheduleTask(()-> this.closeRoom(), 3L, TimeUnit.SECONDS);
     }

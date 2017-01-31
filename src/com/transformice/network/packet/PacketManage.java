@@ -5,6 +5,7 @@ import com.transformice.network.events.room.MouseMovement;
 import com.transformice.network.events.room.PlayerPosition;
 import com.transformice.network.events.screen.Langue;
 import com.transformice.network.events.screen.Login;
+import com.transformice.server.config.Config;
 import com.transformice.server.users.Users;
 
 import java.util.HashMap;
@@ -22,7 +23,7 @@ public class PacketManage {
         this.registry(new MouseMovement());
         this.registry(new PlayerPosition());
         this.registry(new OldProtocol());
-        if (this.users.server.debug) {
+        if (Config.debug) {
             this.users.server.println("Packets loaded: " + this.packets.size(), "debug");
         }
     }

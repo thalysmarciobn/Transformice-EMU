@@ -27,6 +27,7 @@ public class ClientHandler extends SimpleChannelHandler {
     public void channelOpen(ChannelHandlerContext context, ChannelStateEvent e) {
         ConcurrentHashMap player = new ConcurrentHashMap();
         player.put(Identifiers.player.Channel, context.getChannel());
+        player.put(Identifiers.player.lastPacketID, 0);
         player.put(Identifiers.player.ipAddress, ((InetSocketAddress) context.getChannel().getRemoteAddress()).getAddress().getHostAddress());
         player.put(Identifiers.player.Username, "");
         player.put(Identifiers.player.LastPacket, ThreadLocalRandom.current().nextInt(0,99));

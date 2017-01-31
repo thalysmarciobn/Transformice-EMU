@@ -44,7 +44,7 @@ public class MouseMovement implements Packet {
             if (isAngle) {
                 packet2.writeShort(angle).writeShort(vel_angle).writeBoolean(loc1);
             }
-            users.server.rooms.sendAllOthers(player, room, Identifiers.send.room.player_movement, packet.toByteArray());
+            users.server.rooms.sendAllOthers(player, room, Identifiers.send.room.player_movement, packet2.toByteArray());
         }
     }
 }

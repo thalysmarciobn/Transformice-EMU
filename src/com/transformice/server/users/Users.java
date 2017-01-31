@@ -28,10 +28,12 @@ public class Users {
     }
 
     public void parsePackets(ConcurrentHashMap player, byte[] tokens, ByteArray packet, int packetID) {
+        player.replace(Identifiers.player.lastPacketID, ((Integer) player.get(Identifiers.player.lastPacketID) + 1) % 100);
         int header = (tokens[0] << 8) | tokens[1];
         if (this.packetManage.packets.containsKey(header)) {
             this.packetManage.packets.get(header).parse(this, player, packet, packetID);
         }
+        System.out.println(player.get(Identifiers.player.Username) + " REC: " + tokens[0] + " : " + tokens[1]);
     }
 
     public void sendPacket(Channel channel, int[] identifiers, byte... data) {
