@@ -5,6 +5,7 @@ import com.transformice.server.Server;
 import com.transformice.server.config.Config;
 import com.transformice.server.rooms.threads.MapChange;
 import com.transformice.server.users.Users;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.netty.channel.Channel;
 import org.jboss.netty.util.internal.ConcurrentHashMap;
@@ -166,16 +167,18 @@ public class Rooms {
     }
 
     public int getShamanCode(ConcurrentHashMap room) {
-        if ((Integer) room.get(Identifiers.rooms.currentShamanCode) == -1) {
-            room.replace(Identifiers.rooms.currentShamanCode, this.getHighestScore(room));
-            ConcurrentHashMap<String, ConcurrentHashMap> players = (ConcurrentHashMap) room.get(Identifiers.rooms.players);
-            for (ConcurrentHashMap player : players.values()) {
-                if (player.get(Identifiers.player.Code) == room.get(Identifiers.rooms.currentShamanCode)) {
-                    room.replace(Identifiers.rooms.currentShamanName, player.get(Identifiers.player.Username));
-                    room.replace(Identifiers.rooms.currentShamanType, player.get(Identifiers.player.shamanType));
-                    room.replace(Identifiers.rooms.currentShamanLevel, this.server.getShamanLevelByExperience((Integer) player.get(Identifiers.player.Exp)));
-                    room.replace(Identifiers.rooms.currentShamanBadge, player.get(Identifiers.player.Badge));
-                    return (Integer) room.get(Identifiers.rooms.currentShamanCode);
+        if (!ArrayUtils.contains(this.noShamanMaps, (Integer) room.get(Identifiers.rooms.currentMap))) {
+            if ((Integer) room.get(Identifiers.rooms.currentShamanCode) == -1) {
+                room.replace(Identifiers.rooms.currentShamanCode, this.getHighestScore(room));
+                ConcurrentHashMap<String, ConcurrentHashMap> players = (ConcurrentHashMap) room.get(Identifiers.rooms.players);
+                for (ConcurrentHashMap player : players.values()) {
+                    if (player.get(Identifiers.player.Code) == room.get(Identifiers.rooms.currentShamanCode)) {
+                        room.replace(Identifiers.rooms.currentShamanName, player.get(Identifiers.player.Username));
+                        room.replace(Identifiers.rooms.currentShamanType, player.get(Identifiers.player.shamanType));
+                        room.replace(Identifiers.rooms.currentShamanLevel, this.server.getShamanLevelByExperience((Integer) player.get(Identifiers.player.Exp)));
+                        room.replace(Identifiers.rooms.currentShamanBadge, player.get(Identifiers.player.Badge));
+                        return (Integer) room.get(Identifiers.rooms.currentShamanCode);
+                    }
                 }
             }
         }
@@ -183,24 +186,26 @@ public class Rooms {
     }
 
     public int[] getDoubleShamanCode(ConcurrentHashMap room) {
-        if ((Integer) room.get(Identifiers.rooms.currentShamanCode) == -1 || (Integer) room.get(Identifiers.rooms.currentShamanCode2) == -1) {
-            ConcurrentHashMap<String, ConcurrentHashMap> players = (ConcurrentHashMap) room.get(Identifiers.rooms.players);
-            room.replace(Identifiers.rooms.currentShamanCode, this.getHighestScore(room));
-            for (ConcurrentHashMap player : players.values()) {
-                if (player.get(Identifiers.player.Code) == room.get(Identifiers.rooms.currentShamanCode)) {
-                    room.replace(Identifiers.rooms.currentShamanName, player.get(Identifiers.player.Username));
-                    room.replace(Identifiers.rooms.currentShamanType, player.get(Identifiers.player.shamanType));
-                    room.replace(Identifiers.rooms.currentShamanLevel, this.server.getShamanLevelByExperience((Integer) player.get(Identifiers.player.Exp)));
-                    room.replace(Identifiers.rooms.currentShamanBadge, player.get(Identifiers.player.Badge));
+        if (!ArrayUtils.contains(this.noShamanMaps, (Integer) room.get(Identifiers.rooms.currentMap))) {
+            if ((Integer) room.get(Identifiers.rooms.currentShamanCode) == -1 || (Integer) room.get(Identifiers.rooms.currentShamanCode2) == -1) {
+                ConcurrentHashMap<String, ConcurrentHashMap> players = (ConcurrentHashMap) room.get(Identifiers.rooms.players);
+                room.replace(Identifiers.rooms.currentShamanCode, this.getHighestScore(room));
+                for (ConcurrentHashMap player : players.values()) {
+                    if (player.get(Identifiers.player.Code) == room.get(Identifiers.rooms.currentShamanCode)) {
+                        room.replace(Identifiers.rooms.currentShamanName, player.get(Identifiers.player.Username));
+                        room.replace(Identifiers.rooms.currentShamanType, player.get(Identifiers.player.shamanType));
+                        room.replace(Identifiers.rooms.currentShamanLevel, this.server.getShamanLevelByExperience((Integer) player.get(Identifiers.player.Exp)));
+                        room.replace(Identifiers.rooms.currentShamanBadge, player.get(Identifiers.player.Badge));
+                    }
                 }
-            }
-            room.replace(Identifiers.rooms.currentShamanCode2, this.getSecondHighestScore(room));
-            for (ConcurrentHashMap player : players.values()) {
-                if (player.get(Identifiers.player.Code) == room.get(Identifiers.rooms.currentShamanCode2)) {
-                    room.replace(Identifiers.rooms.currentShamanName2, player.get(Identifiers.player.Username));
-                    room.replace(Identifiers.rooms.currentShamanType2, player.get(Identifiers.player.shamanType));
-                    room.replace(Identifiers.rooms.currentShamanLevel2, this.server.getShamanLevelByExperience((Integer) player.get(Identifiers.player.Exp)));
-                    room.replace(Identifiers.rooms.currentShamanBadge2, player.get(Identifiers.player.Badge));
+                room.replace(Identifiers.rooms.currentShamanCode2, this.getSecondHighestScore(room));
+                for (ConcurrentHashMap player : players.values()) {
+                    if (player.get(Identifiers.player.Code) == room.get(Identifiers.rooms.currentShamanCode2)) {
+                        room.replace(Identifiers.rooms.currentShamanName2, player.get(Identifiers.player.Username));
+                        room.replace(Identifiers.rooms.currentShamanType2, player.get(Identifiers.player.shamanType));
+                        room.replace(Identifiers.rooms.currentShamanLevel2, this.server.getShamanLevelByExperience((Integer) player.get(Identifiers.player.Exp)));
+                        room.replace(Identifiers.rooms.currentShamanBadge2, player.get(Identifiers.player.Badge));
+                    }
                 }
             }
         }

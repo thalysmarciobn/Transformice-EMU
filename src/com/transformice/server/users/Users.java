@@ -130,9 +130,7 @@ public class Users {
             player.replace(Identifiers.player.isShaman, false);
         }
         this.sendPlayerList(channel, room);
-        if (!ArrayUtils.contains(this.server.rooms.noShamanMaps, (Integer) room.get(Identifiers.rooms.currentMap))) {
             this.sendPacket(channel, Identifiers.send.room.shaman_info, new ByteArray().writeInt((Integer) room.get(Identifiers.rooms.currentShamanCode)).writeInt((Integer) room.get(Identifiers.rooms.currentShamanCode2)).writeByte((Integer) room.get(Identifiers.rooms.currentShamanType)).writeByte((Integer) room.get(Identifiers.rooms.currentShamanType2)).writeShort((Integer) room.get(Identifiers.rooms.currentShamanLevel)).writeShort((Integer) room.get(Identifiers.rooms.currentShamanLevel2)).writeShort((Integer) room.get(Identifiers.rooms.currentShamanBadge)).writeShort((Integer) room.get(Identifiers.rooms.currentShamanBadge2)).toByteArray());
-        }
         int sync = this.server.rooms.getSyncCode(room);
         this.sendSync(channel, sync);
         if ((Integer) player.get(Identifiers.player.Code) == sync) {
