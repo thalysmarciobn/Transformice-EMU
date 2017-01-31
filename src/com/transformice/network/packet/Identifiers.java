@@ -6,14 +6,27 @@ public class Identifiers {
         public static String players = "players";
         public static String Anchors = "Anchors";
         public static String mapStatus = "mapStatus";
+        public static String deathCount = "deathCount";
+        public static String playerCount = "playerCount";
         public static String currentSyncCode = "currentSyncCode";
         public static String currentSyncName = "currentSyncName";
+        public static String currentShamanCode = "currentShamanCode";
+        public static String currentShamanName = "currentShamanName";
+        public static String currentShamanType = "currentShamanType";
+        public static String currentShamanLevel = "currentShamanLevel";
+        public static String currentShamanBadge = "currentShamanBadge";
+        public static String currentShamanCode2 = "currentShamanCode2";
+        public static String currentShamanName2 = "currentShamanName2";
+        public static String currentShamanType2 = "currentShamanType2";
+        public static String currentShamanLevel2 = "currentShamanLevel2";
+        public static String currentShamanBadge2 = "currentShamanBadge2";
         public static String isCurrentlyPlay = "isCurrentlyPlay";
         public static String gameStartTime = "gameStartTime";
         public static String gameStartTimeMillis = "gameStartTimeMillis";
         public static String roundTime = "roundTime";
         public static String currentMap = "currentMap";
         public static String lastCodePartie = "lastCodePartie";
+        public static String mapChange = "mapChange";
     }
 
     public static class player {
@@ -23,7 +36,11 @@ public class Identifiers {
         public static String lastPacketID = "lastPacketID";
         public static String langueByte = "langueByte";
         public static String Username = "Username";
+        public static String Exp = "Exp";
+        public static String Badge = "Badge";
         public static String Guest = "Guest";
+        public static String isShaman = "isShaman";
+        public static String shamanType = "shamanType";
         public static String isSync = "isSync";
         public static String Dead = "Dead";
         public static String Score = "Score";
@@ -74,13 +91,18 @@ public class Identifiers {
         public static class room {
             public static final int[] player_movement = {4, 4};
             public static final int[] player_position = {4, 6};
+            public static final int[] shaman_position = {4, 10};
+            public static final int[] crouch = {4, 8};
             public static final int[] enter_room = {5, 21};
+            public static final int[] bridge_break = {5, 24};
             public static final int[] new_map = {5, 2};
             public static final int[] round_time = {5, 22};
             public static final int[] map_start_timer = {5, 10};
             public static final int[] room_game_mode = {7, 1};
             public static final int[] room_type = {7, 30};
             public static final int[] shaman_info = {8, 11};
+            public static final int[] sync = {8, 21};
+            public static final int[] player_died = {8, 5};
         }
 
         public static class old {
@@ -128,12 +150,17 @@ public class Identifiers {
 
         public static final class _4 {
             public static final int C = 4;
-            public static final int Object_Sync = 3;
+            public static final int object_sync = 3;
             public static final int mouse_movement = 4;
-            public static final int Mort = 5;
+            public static final int mort = 5;
             public static final int player_position = 6;
-            public static final int Shaman_Position = 8;
-            public static final int Crouch = 9;
+            public static final int shaman_position = 8;
+            public static final int crouch = 9;
+        }
+
+        public static class _5 {
+            public static final int C = 5;
+            public static final int bridge_break = 24;
         }
 
         public static final class _1 {

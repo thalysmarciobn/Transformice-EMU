@@ -28,7 +28,6 @@ public class Login implements Packet {
             ((Channel) player.get(Identifiers.player.Channel)).close();
         } else if (authKey == resultKey && player.get(Identifiers.player.Username).toString().isEmpty()) {
             playerName = playerName.equals("") ? "Souris" : playerName;
-            System.out.println(authKey + " : " + resultKey);
             if (password.equals("")) {
                 player.put(Identifiers.player.Guest, true);
             } else {
@@ -40,15 +39,19 @@ public class Login implements Packet {
                 player.replace(Identifiers.player.Username, playerName);
                 player.put(Identifiers.player.Code, users.lastPlayerCode++);
                 player.put(Identifiers.player.PrivilegeLevel, 0);
-                player.put(Identifiers.player.Dead, false);
+                player.put(Identifiers.player.Dead, true);
                 player.put(Identifiers.player.Score, 0);
                 player.put(Identifiers.player.hasCheese, false);
+                player.put(Identifiers.player.isShaman, false);
                 player.put(Identifiers.player.isReceivedDummy, false);
                 player.put(Identifiers.player.isMovingRight, false);
                 player.put(Identifiers.player.isMovingLeft, false);
-                player.put(Identifiers.player.isAfk, false);
+                player.put(Identifiers.player.isAfk, true);
                 player.put(Identifiers.player.isSync, false);
+                player.put(Identifiers.player.shamanType, 0);
                 player.put(Identifiers.player.Look, "1;0,0,0,0,0,0,0,0,0");
+                player.put(Identifiers.player.Exp, 1);
+                player.put(Identifiers.player.Badge, 0);
                 player.put(Identifiers.player.Color, "78583a");
                 player.put(Identifiers.player.ShamanColor, "95d9d6");
                 player.put(Identifiers.player.roomName, "");

@@ -2,6 +2,8 @@ package com.transformice.server;
 
 import com.transformice.network.Bootstrap;
 import com.transformice.network.packet.PacketManage;
+import com.transformice.server.cache.ManageCache;
+import com.transformice.server.config.Config;
 import com.transformice.server.database.Database;
 import com.transformice.server.helpers.*;
 import com.transformice.server.rooms.Rooms;
@@ -32,10 +34,12 @@ public class Server {
     public Users users;
     public Tribulle tribulle;
     public Network network;
+    public ManageCache cache;
 
     private ScheduledExecutorService tasks = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors());
 
     public void start() {
+        this.cache = new ManageCache();
         this.println("Connecting to database...","info");
         this.database = new Database();
         if (this.database.connect()) {
@@ -76,5 +80,13 @@ public class Server {
 
     public int getTime() {
         return (int) (System.currentTimeMillis() / 1000);
+    }
+
+    public int getShamanLevelByExperience(int experience) {
+        return (experience / Config.Shaman.expBase) + 1;
+    }
+
+    public int getNextExperienceByShamanLevel(int level) {
+        return level * Config.Shaman.expBase;
     }
 }

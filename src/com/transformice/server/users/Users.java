@@ -4,6 +4,7 @@ import com.transformice.network.packet.ByteArray;
 import com.transformice.network.packet.Identifiers;
 import com.transformice.network.packet.PacketManage;
 import com.transformice.server.Server;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.netty.buffer.ChannelBuffers;
 import org.jboss.netty.channel.Channel;
@@ -33,7 +34,6 @@ public class Users {
         if (this.packetManage.packets.containsKey(header)) {
             this.packetManage.packets.get(header).parse(this, player, packet, packetID);
         }
-        System.out.println(player.get(Identifiers.player.Username) + " REC: " + tokens[0] + " : " + tokens[1]);
     }
 
     public void sendPacket(Channel channel, int[] identifiers, byte... data) {
@@ -105,15 +105,34 @@ public class Users {
         this.sendPacket(channel, Identifiers.send.room.enter_room, new ByteArray().writeBoolean(roomName.startsWith("*") || roomName.startsWith(String.valueOf((char) 3))).writeUTF(roomName).toByteArray());
     }
 
-    public void resetPlayer(ConcurrentHashMap player, ConcurrentHashMap room) {
-
+    public void resetPlayer(ConcurrentHashMap player) {
+        player.replace(Identifiers.player.Dead, false);
+        player.replace(Identifiers.player.hasCheese, false);
+        player.replace(Identifiers.player.isAfk, true);
+        player.replace(Identifiers.player.isReceivedDummy, false);
+        player.replace(Identifiers.player.Score, player.get(Identifiers.player.Score));
     }
 
     public void startPlayer(ConcurrentHashMap player, ConcurrentHashMap room) {
         Channel channel = (Channel) player.get(Identifiers.player.Channel);
         this.sendPacket(channel, Identifiers.send.room.new_map, new ByteArray().writeInt((Integer) room.get(Identifiers.rooms.currentMap)).writeShort(this.server.rooms.getPlayerCount(room)).writeByte((Integer) room.get(Identifiers.rooms.lastCodePartie)).writeUTF("").writeUTF("").writeByte(0).writeByte(0).toByteArray());
-        this.sendPacket(channel, Identifiers.send.room.shaman_info, new ByteArray().writeInt(0).writeInt(0).writeByte(0).writeByte(0).writeShort(0).writeShort(0).writeShort(0).writeShort(0).toByteArray());
+        int shamanCode, shamanCode2 = 0;
+        if (ArrayUtils.contains(this.server.rooms.doubleShamanMaps, (Integer) room.get(Identifiers.rooms.currentMap)) && this.server.rooms.getPlayerCount(room) >= 2) {
+            int[] shamans = this.server.rooms.getDoubleShamanCode(room);
+            shamanCode = shamans[0];
+            shamanCode2 = shamans[1];
+        } else {
+            shamanCode = this.server.rooms.getShamanCode(room);
+        }
+        if ((Integer) player.get(Identifiers.player.Code) == shamanCode || (Integer) player.get(Identifiers.player.Code) == shamanCode2) {
+            player.replace(Identifiers.player.isShaman, true);
+        } else {
+            player.replace(Identifiers.player.isShaman, false);
+        }
         this.sendPlayerList(channel, room);
+        if (!ArrayUtils.contains(this.server.rooms.noShamanMaps, (Integer) room.get(Identifiers.rooms.currentMap))) {
+            this.sendPacket(channel, Identifiers.send.room.shaman_info, new ByteArray().writeInt((Integer) room.get(Identifiers.rooms.currentShamanCode)).writeInt((Integer) room.get(Identifiers.rooms.currentShamanCode2)).writeByte((Integer) room.get(Identifiers.rooms.currentShamanType)).writeByte((Integer) room.get(Identifiers.rooms.currentShamanType2)).writeShort((Integer) room.get(Identifiers.rooms.currentShamanLevel)).writeShort((Integer) room.get(Identifiers.rooms.currentShamanLevel2)).writeShort((Integer) room.get(Identifiers.rooms.currentShamanBadge)).writeShort((Integer) room.get(Identifiers.rooms.currentShamanBadge2)).toByteArray());
+        }
         int sync = this.server.rooms.getSyncCode(room);
         this.sendSync(channel, sync);
         if ((Integer) player.get(Identifiers.player.Code) == sync) {

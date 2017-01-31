@@ -19,13 +19,13 @@ public class Database {
     }
 
     public boolean connect() {
-        this.source.setServerName(Config.MySQLHost);
-        this.source.setPort(Config.MySQLPort);
-        this.source.setUser(Config.MySQLUser);
-        this.source.setPassword(Config.MySQLPass);
-        this.source.setDatabaseName(Config.MySQLData);
+        this.source.setServerName(Config.MySQL.Host);
+        this.source.setPort(Config.MySQL.Port);
+        this.source.setUser(Config.MySQL.User);
+        this.source.setPassword(Config.MySQL.Password);
+        this.source.setDatabaseName(Config.MySQL.DatabaseName);
         this.source.setAutoReconnectForConnectionPools(true);
-        this.pool = new ConnectionPool(this.source, Config.MaxConnections);
+        this.pool = new ConnectionPool(this.source, Config.MySQL.MaxConnections);
         this.jdbc = new JdbcHelper(new PooledDataSource(this.pool));
         return true;
     }
