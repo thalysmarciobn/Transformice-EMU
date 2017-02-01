@@ -1,3 +1,5 @@
+Atualizações finalizadas (Source privada), entre em contato via skype: thalysmarciobn
+
 # Transformice-EMU
 ChangeLogs:
  - 31/01/2017
