@@ -10,17 +10,15 @@ import org.jboss.netty.buffer.ChannelBuffers;
 import org.jboss.netty.channel.Channel;
 import org.jboss.netty.util.internal.ConcurrentHashMap;
 
-import java.util.ArrayList;
-import java.util.List;
-
 
 public class Users {
 
-    public List<String> players = new ArrayList();
+    public ConcurrentHashMap players = new ConcurrentHashMap();
 
     public int lastPlayerCode = 1;
 
     public Server server;
+    public Commands commands;
     public Skills skills;
     public PacketManage packetManage;
 
@@ -177,4 +175,20 @@ public class Users {
         packet.writeShort(0); // size
         this.sendPacket(channel, Identifiers.send.player.inventory, packet.toByteArray());
     }
+
+    public void sendMessage(Channel channel, String message) {
+        this.sendMessage(channel, message, false);
+    }
+
+    private void sendMessage(Channel channel, String message, boolean toTab) {
+        this.sendPacket(channel, Identifiers.send.player.recv_message, new ByteArray().writeBoolean(toTab).writeUTF(message).writeByte(0).writeUTF("").toByteArray());
+    }
+
+    public void sendProfile(Channel channel, String playerName) {
+        ConcurrentHashMap player = (ConcurrentHashMap) this.players.get(playerName);
+        if (player != null && !(Boolean) player.get(Identifiers.player.Guest)) {
+
+        }
+    }
+
 }

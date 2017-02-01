@@ -32,10 +32,17 @@ public class Identifiers {
     public static class player {
         public static String Channel = "channel";
         public static String ipAddress = "ipAddress";
+        public static String isNew = "isNew";
         public static String playerID = "playerID";
         public static String lastPacketID = "lastPacketID";
         public static String langueByte = "langueByte";
         public static String Username = "Username";
+        public static String FirstCount = "FirstCount";
+        public static String CheeseCount = "CheeseCount";
+        public static String ShamanSaves = "ShamanSaves";
+        public static String HardModeSaves = "HardModeSaves";
+        public static String DivineModeSaves = "DivineModeSaves";
+        public static String BootcampCount = "BootcampCount";
         public static String Exp = "Exp";
         public static String Badge = "Badge";
         public static String Guest = "Guest";
@@ -64,6 +71,7 @@ public class Identifiers {
         public static String AuthKey = "AuthKey";
         public static String Code = "Code";
         public static String PrivilegeLevel = "PrivilegeLevel";
+        public static String currentCaptcha = "currentCaptcha";
     }
 
     public static class send {
@@ -72,6 +80,7 @@ public class Identifiers {
         }
 
         public static class player {
+            public static final int[] recv_message = {6, 20};
             public static final int[] shaman_exp = {8, 8};
             public static final int[] shaman_skills = {8, 22};
             public static final int[] shaman_items = {20, 27};
@@ -84,6 +93,8 @@ public class Identifiers {
 
         public static class screen {
             public static final int[] version = {26, 3};
+            public static final int[] login_result = {26, 12};
+            public static final int[] captcha = {26, 20};
             public static final int[] banner = {16, 9};
             public static final int[] image = {100, 99};
         }
@@ -133,19 +144,9 @@ public class Identifiers {
             }
         }
 
-
-        public static final class _26 {
-            public static final int C = 26;
-            public static final int Create_Account = 7;
-            public static final int Login = 8;
-            public static final int Captcha = 20;
-            public static final int Room_List = 35;
-            public static final int Request_Info = 40;
-        }
-
-        public static final class _8 {
-            public static final int C = 8;
-            public static final int Langue = 2;
+        public static final class _1 {
+            public static final int C = 1;
+            public static final int Old_Protocol = 1;
         }
 
         public static final class _4 {
@@ -163,9 +164,25 @@ public class Identifiers {
             public static final int bridge_break = 24;
         }
 
-        public static final class _1 {
-            public static final int C = 1;
-            public static final int Old_Protocol = 1;
+        public static final class _6 {
+            public static final int C = 6;
+            public static final int chat_message = 6;
+            public static final int staff_chat = 10;
+            public static final int commands = 26;
+        }
+
+        public static final class _8 {
+            public static final int C = 8;
+            public static final int Langue = 2;
+        }
+
+        public static final class _26 {
+            public static final int C = 26;
+            public static final int Create_Account = 7;
+            public static final int Login = 8;
+            public static final int Captcha = 20;
+            public static final int Room_List = 35;
+            public static final int Request_Info = 40;
         }
     }
 

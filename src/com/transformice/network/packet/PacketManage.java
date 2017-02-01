@@ -1,7 +1,10 @@
 package com.transformice.network.packet;
 
+import com.transformice.network.events.chat.Commands;
 import com.transformice.network.events.old.OldProtocol;
 import com.transformice.network.events.room.sync.*;
+import com.transformice.network.events.screen.Captcha;
+import com.transformice.network.events.screen.CreateAccount;
 import com.transformice.network.events.screen.Langue;
 import com.transformice.network.events.screen.Login;
 import com.transformice.server.config.Config;
@@ -18,7 +21,9 @@ public class PacketManage {
     public PacketManage(Users users) {
         this.users = users;
         this.registry(new Login());
+        this.registry(new CreateAccount());
         this.registry(new Langue());
+        this.registry(new Captcha());
         this.registry(new Mort());
         this.registry(new MouseMovement());
         this.registry(new ShamanPosition());
@@ -27,6 +32,7 @@ public class PacketManage {
         this.registry(new ObjectSync());
         this.registry(new BridgeBreak());
         this.registry(new OldProtocol());
+        this.registry(new Commands());
         if (Config.debug) {
             this.users.server.println("Packets loaded: " + this.packets.size(), "debug");
         }

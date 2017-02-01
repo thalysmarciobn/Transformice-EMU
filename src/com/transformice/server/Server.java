@@ -8,8 +8,11 @@ import com.transformice.server.database.Database;
 import com.transformice.server.helpers.*;
 import com.transformice.server.rooms.Rooms;
 import com.transformice.server.tribulle.Tribulle;
+import com.transformice.server.users.Commands;
 import com.transformice.server.users.Skills;
 import com.transformice.server.users.Users;
+import jdbchelper.QueryResult;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.jboss.netty.channel.Channel;
 
 import java.net.InetSocketAddress;
@@ -49,6 +52,7 @@ public class Server {
             this.langues = new Langues();
             this.users = new Users(this);
             this.users.packetManage = new PacketManage(this.users);
+            this.users.commands = new Commands(this.users, this.rooms);
             this.users.skills = new Skills(this.users, this.rooms);
             this.network = new Network();
             this.tribulle = new Tribulle(this, this.users);
@@ -59,6 +63,7 @@ public class Server {
                 this.ports.add(port);
             }
             this.println("Server online on ports: " + this.ports.toString(), "info");
+            this.scheduleTask(()-> this.database.freeIdleConnections(), 30L, TimeUnit.SECONDS, true);
         }
     }
 
@@ -88,5 +93,21 @@ public class Server {
 
     public int getNextExperienceByShamanLevel(int level) {
         return level * Config.Shaman.expBase;
+    }
+
+    public String getRandom(int size) {
+        return RandomStringUtils.random(size, "ABCDE");
+    }
+
+    public String getRandomChars(int size) {
+        return RandomStringUtils.random(size, "ABCDEF123456789");
+    }
+
+    public boolean checkExistingUser(String playerName) {
+        QueryResult result = this.database.jdbc.query("SELECT id FROM users WHERE Username = ?", playerName);
+        if (result.next()) {
+            return true;
+        }
+        return false;
     }
 }

@@ -27,6 +27,7 @@ public class ClientHandler extends SimpleChannelHandler {
     public void channelOpen(ChannelHandlerContext context, ChannelStateEvent e) {
         ConcurrentHashMap player = new ConcurrentHashMap();
         player.put(Identifiers.player.Channel, context.getChannel());
+        player.put(Identifiers.player.isNew, false);
         player.put(Identifiers.player.lastPacketID, 0);
         player.put(Identifiers.player.ipAddress, ((InetSocketAddress) context.getChannel().getRemoteAddress()).getAddress().getHostAddress());
         player.put(Identifiers.player.Username, "");
@@ -34,6 +35,7 @@ public class ClientHandler extends SimpleChannelHandler {
         player.put(Identifiers.player.AuthKey, ThreadLocalRandom.current().nextInt(0, Integer.MAX_VALUE));
         player.put(Identifiers.player.Langue, "BR");
         player.put(Identifiers.player.langueByte, 3);
+        player.put(Identifiers.player.currentCaptcha, this.server.getRandom(4));
         context.getChannel().setAttachment(player);
     }
 
